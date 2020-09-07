@@ -2,12 +2,10 @@ use crate::Event;
 use async_trait::async_trait;
 use futures::Stream;
 
-pub mod compat;
-
 #[async_trait]
-pub trait StreamingSink: Send + Sync + 'static {
+pub trait StreamingSink: Send {
     async fn run(
         &mut self,
-        input: impl Stream<Item = Event> + Send + Sync + 'static,
-    ) -> crate::Result<()>;
+        input: Box<dyn Stream<Item = Result<Event, ()>> + Send>,
+    ) -> Result<(), ()>;
 }
